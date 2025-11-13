@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ppb_marketplace/service/Beranda.dart';
+import 'package:ppb_marketplace/service/BerandaNav.dart';
 import 'package:ppb_marketplace/service/LoginService.dart';
 
 class LoginPage extends StatefulWidget {
@@ -34,17 +35,18 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Logo (opsional)
-                  Image.asset('assets/logo.png', width: 250, height: 120),
+                  FlutterLogo(size: 100),
                   const SizedBox(height: 16),
-
                   Text(
-                    "Selamat Datang",
+                    "MarketPlace Sekolah",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     "Silakan login untuk melanjutkan",
-                    style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 24),
 
@@ -121,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => const Beranda(),
+                                        builder: (_) => const  BerandaPage(),
                                       ),
                                     );
                                   } else {
