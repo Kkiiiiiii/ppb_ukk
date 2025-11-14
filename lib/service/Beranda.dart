@@ -27,7 +27,7 @@ class _BerandaPageState extends State<BerandaPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Center(child: Text('Pemasukan\n20.000',
+                    Center(child: Text('Pemasukan\n',
                     style: TextStyle(color: Colors.white),
                     ),
                     ),

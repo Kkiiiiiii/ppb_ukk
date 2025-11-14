@@ -12,6 +12,13 @@ class Produk extends StatefulWidget {
 class _ProdukState extends State<Produk> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Produk Page', textAlign: TextAlign.center),
+      ),
+      body: Center(
+        child: Text('Produk Page'),
+      ),
+    );
   }
 }

@@ -12,6 +12,13 @@ class Toko extends StatefulWidget {
 class _TokoState extends State<Toko> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Toko Saya', textAlign: TextAlign.center),
+      ),
+      body: Center(
+        child: Text('Toko Page'),
+      ),
+    );
   }
 }

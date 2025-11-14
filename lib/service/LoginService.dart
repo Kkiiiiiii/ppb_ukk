@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 class Loginservice {
   final String _baseUrl = 'https://learncode.biz.id/api';
 

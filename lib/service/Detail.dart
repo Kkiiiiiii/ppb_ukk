@@ -9,6 +9,13 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detail Page', textAlign: TextAlign.center),
+      ),
+      body: Center(
+        child: Text('Detail Page'),
+      ),
+    );
   }
 }
