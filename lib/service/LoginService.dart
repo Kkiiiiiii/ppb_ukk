@@ -73,5 +73,22 @@ class LoginService {
     throw Exception('Gagal registrasi, status code: ${response.statusCode}');
   }
 }
+  
+  Future<List<Map<String, dynamic>>> getToko(String token) async {
+    final url = Uri.parse('$_baseUrl/stores'); // endpoint toko
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(data['data']);
+    } else {
+      throw Exception('Gagal mengambil data toko, status code: ${response.statusCode}');
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ppb_marketplace/service/Profile.dart';
+import 'package:ppb_marketplace/service/Toko.dart';
 
 class Berandanav extends StatefulWidget {
   final String token;
@@ -20,7 +21,7 @@ class _BerandanavState extends State<Berandanav> {
     super.initState();
     _pages = [
       Center(child: Text('Beranda')),
-      Center(child: Text('Detail Toko')),
+      Toko(token: widget.token),
       Center(child: Text('Produk')),
       Center(child: Text('Kategori')),
       Profile(token: widget.token),
