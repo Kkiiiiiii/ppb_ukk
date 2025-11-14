@@ -99,4 +99,32 @@ class LoginService {
   );
 }
 
+  // Ambil daftar produk
+  Future<List<dynamic>> getProduk(String token) async {
+    final url = Uri.parse('$_baseUrl/products'); // sesuaikan endpoint API produk
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print("Status Produk: ${response.statusCode}");
+    print("Body Produk: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // Asumsikan API return { "data": [ ... ] }
+      return List<dynamic>.from(data['data']);
+    }
+
+    throw Exception(
+      'Gagal mengambil data produk, status code: ${response.statusCode}',
+    );
+  }
+
+
 }
