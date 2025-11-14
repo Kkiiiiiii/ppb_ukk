@@ -1,60 +1,84 @@
-// import 'package:flutter/material.dart';
-// import 'package:ppb_marketplace/service/LoginService.dart';
+import 'package:flutter/material.dart';
+import 'package:ppb_marketplace/service/LoginService.dart';
+import 'package:ppb_marketplace/service/Loginpage.dart';
 
-// class Profile extends StatefulWidget {
-//   final int userId;
-//   const Profile({super.key, required this.userId});
+class Profile extends StatefulWidget {
+  final String token;
+  Profile({super.key, required this.token});
 
-//   @override
-//   State<Profile> createState() => _ProfileState();
-// }
+  @override
+  State<Profile> createState() => _ProfileState();
+}
 
-// class _ProfileState extends State<Profile> {
-//   final Loginservice loginservice = Loginservice();
-//   Map<String, dynamic>? user;
+class _ProfileState extends State<Profile> {
+  final LoginService loginService = LoginService();
+  Map<String, dynamic>? user;
+  bool _isLoading = true;
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadUser();
-//   }
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
 
-//   Future<void> _loadUser() async {
-//     try {
-//       final userData = await loginservice.getUserProfile(widget.userId);
-//       setState(() {
-//         user = userData;
-//       });
-//     } catch (e) {
-//       debugPrint('Error loading user: $e');
-//     }
-//   }
+  Future<void> _loadUser() async {
+    try {
+      final userData = await loginService.getUserProfile(widget.token);
+      setState(() {
+        user = userData;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      debugPrint('Error loading user: $e');
+    }
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     if (user == null) {
-//       return const Center(child: CircularProgressIndicator());
-//     }
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) return Center(child: CircularProgressIndicator());
+    if (user == null) return Center(child: Text('Gagal memuat data user'));
 
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Profile')),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text('Nama: ${user!['name'] ?? '-'}'),
-//             Text('Email: ${user!['email'] ?? '-'}'),
-//             const SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: () {
-//                 // Tambahkan aksi logout atau edit profil di sini
-//               },
-//               child: const Text('Logout'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+    return Scaffold(
+      appBar: AppBar(title: Text('Profile')),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Tampilkan gambar user
+            Center(
+              child: user!['avatar'] != null
+                  ? Image.network(
+                      user!['avatar'],
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.person, size: 100);
+                      },
+                    )
+                  : const Icon(Icons.person, size: 100),
+            ),
+            SizedBox(height: 16),
+
+            Text('ID: ${user!['id_user']}'),
+            Text('Nama: ${user!['nama'] ?? '-'}'),
+            Text('Username: ${user!['username'] ?? '-'}'),
+            Text('Role: ${user!['role'] ?? '-'}'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginPage()),
+                );
+              },
+              child: Text('Logout'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

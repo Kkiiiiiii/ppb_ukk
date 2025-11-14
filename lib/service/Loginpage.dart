@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ppb_marketplace/service/Beranda.dart';
 import 'package:ppb_marketplace/service/BerandaNav.dart';
 import 'package:ppb_marketplace/service/LoginService.dart';
+import 'package:ppb_marketplace/service/Register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final Loginservice _loginService = Loginservice();
+  final LoginService _loginService = LoginService();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -27,33 +27,30 @@ class _LoginPageState extends State<LoginPage> {
         child: Card(
           elevation: 8,
           child: Container(
-            padding: const EdgeInsets.all(32.0),
-            constraints: const BoxConstraints(maxWidth: 350),
+            padding:  EdgeInsets.all(32.0),
+            constraints:  BoxConstraints(maxWidth: 350),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Logo (opsional)
-                  FlutterLogo(size: 100),
-                  const SizedBox(height: 16),
+                   FlutterLogo(size: 100),
+                   SizedBox(height: 16),
                   Text(
                     "MarketPlace Sekolah",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 8),
+                 SizedBox(height: 8),
                   Text(
                     "Silakan login untuk melanjutkan",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 24),
 
                   // Username
                   TextFormField(
                     controller: _usernameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Username',
                       hintText: 'Masukkan username Anda',
                       prefixIcon: Icon(Icons.person_outline),
@@ -66,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                   SizedBox(height: 16),
 
                   // Password
                   TextFormField(
@@ -75,8 +72,8 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       labelText: 'Kata Sandi',
                       hintText: 'Masukkan kata sandi',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      border: const OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock_outline),
+                      border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -100,62 +97,83 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 24),
 
                   // Tombol Login
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () async {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                setState(() => _isLoading = true);
+                  // Tombol Login
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: _isLoading
+        ? null
+        : () async {
+            if (_formKey.currentState?.validate() ?? false) {
+              setState(() => _isLoading = true);
 
-                                try {
-                                  // Coba login via API
-                                  final success = await _loginService.login(
-                                    _usernameController.text.trim(),
-                                    _passwordController.text.trim(),
-                                  );
+              try {
+                // Call API login
+                final result = await _loginService.login(
+                  _usernameController.text.trim(),
+                  _passwordController.text.trim(),
+                );
 
-                                  if (!mounted) return;
+                if (!mounted) return;
 
-                                  if (success) {
-                                    // Jika login berhasil → navigasi ke HomePage
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => const  Berandanav(),
-                                      ),
-                                    );
-                                  } else {
-                                    // Jika gagal
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text('Login gagal, periksa kembali akun Anda')),
-                                    );
-                                  }
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content:
-                                            Text('Terjadi kesalahan: $e')),
-                                  );
-                                } finally {
-                                  setState(() => _isLoading = false);
-                                }
-                              }
-                            },
-                      child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : const Text(
-                              'Masuk',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Berandanav(
+                      token: result['token'],
+                      userId: result['userId'],
                     ),
                   ),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Terjadi kesalahan: $e'),
+                  ),
+                );
+              } finally {
+                setState(() => _isLoading = false);
+              }
+            }
+          },
+    child: _isLoading
+        ? CircularProgressIndicator(
+            color: Colors.white,
+          )
+        : Text(
+            'Masuk',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+  ),
+),
+
+// Row "Belum punya akun?" di luar tombol
+const SizedBox(height: 16),
+Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    const Text("Belum punya akun? "),
+    GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const Register()),
+        );
+      },
+      child: const Text(
+        "Daftar",
+        style: TextStyle(
+          color: Colors.blue,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ],
+),
+
                 ],
               ),
             ),
