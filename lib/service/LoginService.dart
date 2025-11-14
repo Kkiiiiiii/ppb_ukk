@@ -74,21 +74,29 @@ class LoginService {
   }
 }
   
-  Future<List<Map<String, dynamic>>> getToko(String token) async {
-    final url = Uri.parse('$_baseUrl/stores'); // endpoint toko
-    final response = await http.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+ Future<Map<String, dynamic>> getToko(String token) async {
+  final url = Uri.parse('$_baseUrl/stores');
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return List<Map<String, dynamic>>.from(data['data']);
-    } else {
-      throw Exception('Gagal mengambil data toko, status code: ${response.statusCode}');
-    }
+  final response = await http.get(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  print("Status: ${response.statusCode}");
+  print("Body: ${response.body}");
+
+  final data = jsonDecode(response.body);
+
+  if (response.statusCode == 200) {
+    return Map<String, dynamic>.from(data["data"]);
   }
+
+  throw Exception(
+    'Gagal mengambil data toko, status code: ${response.statusCode}',
+  );
+}
+
 }
