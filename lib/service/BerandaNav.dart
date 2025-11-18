@@ -32,7 +32,7 @@ class _BerandanavState extends State<Berandanav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Marketplace SMK')),
+      appBar: AppBar(title: Center(child: Text('Marketplace SMK'))),
       body: _pages[_selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,

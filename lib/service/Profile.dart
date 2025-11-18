@@ -40,11 +40,11 @@ class _ProfileState extends State<Profile> {
     if (user == null) return Center(child: Text('Gagal memuat data user'));
 
     return Scaffold(
-      appBar: AppBar(title: Text('Profile')),
+      appBar: AppBar(title: Center(child: Text('Profile'))),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Tampilkan gambar user
             Center(
