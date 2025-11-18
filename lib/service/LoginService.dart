@@ -126,5 +126,46 @@ class LoginService {
     );
   }
 
+  // UPDATE PROFILE
+Future<Map<String, dynamic>> updateProfile(
+  String token, {
+  required String nama,
+  required String username,
+  required String kontak,
+}) async {
+  final url = Uri.parse('$_baseUrl/profile/update');
+
+  final response = await http.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode({
+      'nama': nama,
+      'username': username,
+      'kontak': kontak,
+    }),
+  );
+
+  print("Status Update: ${response.statusCode}");
+  print("Body Update: ${response.body}");
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    final data = jsonDecode(response.body);
+
+    // jika server kirim { success: true, data: {...} }
+    return Map<String, dynamic>.from(data['data']);
+  }
+
+  // jika error 422
+  if (response.statusCode == 422) {
+    final data = jsonDecode(response.body);
+    throw Exception(data['errors'] ?? data['message']);
+  }
+
+  throw Exception(
+      'Gagal update profile, status code: ${response.statusCode}');
+}
 
 }

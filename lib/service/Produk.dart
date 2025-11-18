@@ -70,7 +70,7 @@ class _ProdukState extends State<Produk> {
                     )
                   : const Icon(Icons.image_not_supported),
 
-              title: Text(p['nama'] ?? "Tanpa Nama"),
+              title: Text(p['nama_produk'] ?? "Tanpa Nama"),
               subtitle: Text(
                 "Harga: Rp ${p['harga']}\nStok: ${p['stok']}",
               ),

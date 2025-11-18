@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ppb_marketplace/service/LoginService.dart';
 import 'package:ppb_marketplace/service/Loginpage.dart';
+import 'package:ppb_marketplace/service/updateProfil.dart';
 
 class Profile extends StatefulWidget {
   final String token;
@@ -66,6 +67,22 @@ class _ProfileState extends State<Profile> {
             Text('Kontak: ${user!['kontak'] ?? '-'}'),
             Text('Role: ${user!['role'] ?? '-'}'),
             SizedBox(height: 20),
+             ElevatedButton(
+              onPressed: () {
+                // Navigasi ke halaman Update Profile dengan data user
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileUpdatePage(
+                      token: widget.token,
+                      userData: user!, // kirim data user ke halaman update
+                    ),
+                  ),
+                );
+              },
+              child: Text('Update Profile'),
+            ),
+            SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(
@@ -78,6 +95,7 @@ class _ProfileState extends State<Profile> {
           ],
         ),
       ),
+      
     );
   }
 }
