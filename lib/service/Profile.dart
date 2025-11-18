@@ -61,10 +61,9 @@ class _ProfileState extends State<Profile> {
                   : const Icon(Icons.person, size: 100),
             ),
             SizedBox(height: 16),
-
-            Text('ID: ${user!['id_user']}'),
             Text('Nama: ${user!['nama'] ?? '-'}'),
             Text('Username: ${user!['username'] ?? '-'}'),
+            Text('Kontak: ${user!['kontak'] ?? '-'}'),
             Text('Role: ${user!['role'] ?? '-'}'),
             SizedBox(height: 20),
             ElevatedButton(

@@ -52,12 +52,6 @@ class _RegisterState extends State<Register> {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.person),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama tidak boleh kosong';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
 
