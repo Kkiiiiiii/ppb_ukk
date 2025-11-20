@@ -5,7 +5,7 @@ import 'package:ppb_marketplace/service/updateProfil.dart';
 
 class Profile extends StatefulWidget {
   final String token;
-  Profile({super.key, required this.token});
+  const Profile({super.key, required this.token});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -14,91 +14,172 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final LoginService loginService = LoginService();
   Map<String, dynamic>? user;
-  bool _isLoading = true;
+  bool loading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadUser();
+    loadUser();
   }
 
-  Future<void> _loadUser() async {
+  Future<void> loadUser() async {
     try {
-      final userData = await loginService.getUserProfile(widget.token);
+      final data = await loginService.getUserProfile(widget.token);
       setState(() {
-        user = userData;
-        _isLoading = false;
+        user = data;
+        loading = false;
       });
     } catch (e) {
-      setState(() => _isLoading = false);
-      debugPrint('Error loading user: $e');
+      setState(() => loading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return Center(child: CircularProgressIndicator());
-    if (user == null) return Center(child: Text('Gagal memuat data user'));
+    if (loading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (user == null) {
+      return const Scaffold(
+        body: Center(child: Text("Gagal memuat data")),
+      );
+    }
 
     return Scaffold(
-  appBar: AppBar(
-    title: Center(child: Text('Profile')),
-    backgroundColor: const Color(0xFF74A2C7), 
-  ),
-  backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
-  body: Padding(
-    padding: EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Tampilkan gambar user
-        Center(
-          child: user!['avatar'] != null
-              ? Image.network(
-                  user!['avatar'],
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.person, size: 100);
-                  },
-                )
-              : const Icon(Icons.person, size: 100),
-        ),
-        SizedBox(height: 16),
-        Text('Nama: ${user!['nama'] ?? '-'}'),
-        Text('Username: ${user!['username'] ?? '-'}'),
-        Text('Kontak: ${user!['kontak'] ?? '-'}'),
-        Text('Role: ${user!['role'] ?? '-'}'),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfileUpdatePage(
-                  token: widget.token,
-                  userData: user!, 
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        title: const Text("Profil"),
+        centerTitle: true,
+        backgroundColor: Colors.teal,
+      ),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            // FOTO PROFIL
+            Center(
+              child: CircleAvatar(
+                radius: 55,
+                backgroundColor: Colors.grey.shade300,
+                backgroundImage:
+                    user!['avatar'] != null ? NetworkImage(user!['avatar']) : null,
+                child: user!['avatar'] == null
+                    ? const Icon(Icons.person, size: 60, color: Colors.white)
+                    : null,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // KARTU INFORMASI
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  )
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  infoRow("Nama", user!['nama']),
+                  infoRow("Username", user!['username']),
+                  infoRow("Kontak", user!['kontak']),
+                  infoRow("Role", user!['role']),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // TOMBOL UPDATE PROFILE
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                minimumSize: const Size(double.infinity, 48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            );
-          },
-          child: Text('Update Profile'),
-        ),
-        SizedBox(height: 30),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => LoginPage()),
-            );
-          },  
-          child: Text('Logout'),
-        ),
-      ],
-    ),
-  ),   
-);
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileUpdatePage(
+                      token: widget.token,
+                      userData: user!,
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                "Update Profil",
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
 
+            const SizedBox(height: 15),
+
+            // TOMBOL LOGOUT
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                minimumSize: const Size(double.infinity, 48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginPage()),
+                );
+              },
+              child: const Text(
+                "Logout",
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget infoRow(String label, dynamic value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Text(
+            "$label:",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              value ?? "-",
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.grey.shade800,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

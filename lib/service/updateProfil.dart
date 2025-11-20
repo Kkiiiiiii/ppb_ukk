@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'LoginService.dart'; // sesuaikan path
+import 'LoginService.dart'; 
 
 class ProfileUpdatePage extends StatefulWidget {
   final String token;
@@ -58,7 +58,7 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
         ),
       );
 
-      Navigator.pop(context, result); // kembalikan data baru
+      Navigator.pop(context, result); 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

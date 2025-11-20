@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ppb_marketplace/service/TambahProduk.dart';
+
 class BerandaPage extends StatefulWidget {
-  const BerandaPage({super.key});
+  final String token;
+
+  const BerandaPage({super.key, required this.token});
 
   @override
   State<BerandaPage> createState() => _BerandaPageState();
@@ -9,61 +13,40 @@ class BerandaPage extends StatefulWidget {
 class _BerandaPageState extends State<BerandaPage> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 35),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.green,
+    return Scaffold(
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        title: Text("Beranda"),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        elevation: 2,
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TambahProduk(token: widget.token,)),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                   width: 150,
-                  height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Center(child: Text('Pemasukan\n',
-                    style: TextStyle(color: Colors.white),
-                    ),
-                    ),
-              Icon(Icons.arrow_circle_up_outlined,color: Colors.white,),
-                  ],
-                ),
+                elevation: 3,
               ),
-              SizedBox(width: 25,),
-               Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.red,
-                ),
-                   width: 150,
-                  height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Center(child: Text('Pengeluaran\n10.000', 
-                     style: TextStyle(color: Colors.white),
-                    ),
-                    ),
-              Icon(Icons.arrow_circle_down_outlined,color: Colors.white,),
-              SizedBox(height: 15,),
-                  ],
-                ),
+              child: Text(
+                'Tambah Produk',
+                style: TextStyle(fontSize: 18),
               ),
-             ],
             ),
-            SizedBox(height: 50,),
-            Container(
-              decoration: BoxDecoration(
-                
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

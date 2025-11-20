@@ -3,7 +3,6 @@ import 'package:ppb_marketplace/service/LoginService.dart';
 
 class Toko extends StatefulWidget {
   final String token;
-
   const Toko({super.key, required this.token});
 
   @override
@@ -29,42 +28,80 @@ class _TokoState extends State<Toko> {
         loading = false;
       });
     } catch (e) {
-      print("Error: $e");
       setState(() => loading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loading) return Center(child: CircularProgressIndicator());
-    if (toko == null) return Center(child: Text("Gagal memuat toko"));
+    if (loading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (toko == null) {
+      return const Scaffold(
+        body: Center(child: Text("Gagal memuat toko")),
+      );
+    }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Toko Saya")),
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        title: const Text("Toko Saya"),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        elevation: 2,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Nama Toko: ${toko!['nama_toko']}"),
-            Text("Deskripsi: ${toko!['deskripsi']}"),
-            Text("Kontak: ${toko!['kontak_toko']}"),
-            Text("Alamat: ${toko!['alamat']}"),
-            const SizedBox(height: 10),
-
-            toko!['gambar'] != null
-                ? Image.network(
-                    toko!['gambar'],
-                    height: 150,
-                    fit: BoxFit.cover,
-                    headers: const {
-                      "Access-Control-Allow-Origin": "*",
-                    },
-                    errorBuilder: (_, __, ___) =>
-                        const Text("Gagal memuat gambar", style: TextStyle(color: Colors.red)),
-                  )
-                : Text("Tidak ada gambar"),
-          ],  
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                toko!['nama_toko'],
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                toko!['deskripsi'],
+                style: TextStyle(color: Colors.grey.shade700),
+              ),
+              const SizedBox(height: 12),
+              Text("Kontak: ${toko!['kontak_toko']}"),
+              Text("Alamat: ${toko!['alamat']}"),
+              const SizedBox(height: 20),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: toko!['gambar'] != null
+                    ? Image.network(
+                        toko!['gambar'],
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Text(
+                          "Gagal memuat gambar",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      )
+                    : const Text("Tidak ada gambar"),
+              ),
+            ],
+          ),
         ),
       ),
     );

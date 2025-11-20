@@ -22,7 +22,7 @@ class _BerandanavState extends State<Berandanav> {
   void initState() {
     super.initState();
     _pages = [
-      BerandaPage(),
+      BerandaPage(token: widget.token,),
       Toko(token: widget.token),
       Produk(token: widget.token),
       Center(child: Text('Kategori')),
@@ -33,7 +33,6 @@ class _BerandanavState extends State<Berandanav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text('Marketplace SMK'))),
       body: _pages[_selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,

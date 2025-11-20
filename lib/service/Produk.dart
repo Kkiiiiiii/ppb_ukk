@@ -70,9 +70,9 @@ class _ProdukState extends State<Produk> {
                     )
                   : const Icon(Icons.image_not_supported),
 
-              title: Text(p['nama_produk'] ?? "Tanpa Nama"),
+              title: Text(p['nama_produk'] ?? "Tanpa Nama", style: TextStyle(color: Colors.teal),),
               subtitle: Text(
-                "Harga: Rp ${p['harga']}\nStok: ${p['stok']}",
+                "Harga: Rp ${p['harga']}\nStok: ${p['stok']}\nTanggal Upload: ${p['tanggal_upload']}\nDeskripsi: ${p['deskripsi']}",
               ),
 
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -82,7 +82,7 @@ class _ProdukState extends State<Produk> {
                 MaterialPageRoute(
                   builder: (context) => Detail(
                     token: widget.token,
-                    productId: p['id_produk'], // id produk yang diklik
+                    productId: p['id_produk'], 
                   ),
                 ),
               );
