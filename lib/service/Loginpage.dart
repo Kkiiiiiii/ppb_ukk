@@ -96,15 +96,12 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   const SizedBox(height: 24),
-
-                  // Tombol Login
-                  // Tombol Login
-SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    onPressed: _isLoading
-        ? null
-        : () async {
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _isLoading
+                ? null
+                : () async {
             if (_formKey.currentState?.validate() ?? false) {
               setState(() => _isLoading = true);
 
@@ -151,19 +148,18 @@ SizedBox(
   ),
 ),
 
-// Row "Belum punya akun?" di luar tombol
-const SizedBox(height: 16),
-Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    const Text("Belum punya akun? "),
-    GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const Register()),
-        );
-      },
+  const SizedBox(height: 16),
+  Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const Text("Belum punya akun? "),
+      GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const Register()),
+          );
+        },
       child: const Text(
         "Daftar",
         style: TextStyle(
