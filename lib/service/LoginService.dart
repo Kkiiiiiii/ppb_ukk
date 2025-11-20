@@ -50,7 +50,7 @@ class LoginService {
       throw Exception('Gagal mengambil data user, status code: ${response.statusCode}');
     }
   }
-
+  //register
  Future<Map<String, dynamic>> register(String nama, String username, int kontak, String password) async {
   final url = Uri.parse('$_baseUrl/register');
   final response = await http.post(
@@ -73,7 +73,7 @@ class LoginService {
     throw Exception('Gagal registrasi, status code: ${response.statusCode}');
   }
 }
-  
+  //Toko
  Future<Map<String, dynamic>> getToko(String token) async {
   final url = Uri.parse('$_baseUrl/stores');
 
@@ -117,7 +117,6 @@ class LoginService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // Asumsikan API return { "data": [ ... ] }
       return List<dynamic>.from(data['data']);
     }
 
@@ -154,7 +153,6 @@ Future<Map<String, dynamic>> updateProfile(
   if (response.statusCode == 200 || response.statusCode == 201) {
     final data = jsonDecode(response.body);
 
-    // jika server kirim { success: true, data: {...} }
     return Map<String, dynamic>.from(data['data']);
   }
 

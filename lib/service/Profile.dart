@@ -41,61 +41,64 @@ class _ProfileState extends State<Profile> {
     if (user == null) return Center(child: Text('Gagal memuat data user'));
 
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text('Profile'))),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Tampilkan gambar user
-            Center(
-              child: user!['avatar'] != null
-                  ? Image.network(
-                      user!['avatar'],
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.person, size: 100);
-                      },
-                    )
-                  : const Icon(Icons.person, size: 100),
-            ),
-            SizedBox(height: 16),
-            Text('Nama: ${user!['nama'] ?? '-'}'),
-            Text('Username: ${user!['username'] ?? '-'}'),
-            Text('Kontak: ${user!['kontak'] ?? '-'}'),
-            Text('Role: ${user!['role'] ?? '-'}'),
-            SizedBox(height: 20),
-             ElevatedButton(
-              onPressed: () {
-                // Navigasi ke halaman Update Profile dengan data user
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfileUpdatePage(
-                      token: widget.token,
-                      userData: user!, // kirim data user ke halaman update
-                    ),
-                  ),
-                );
-              },
-              child: Text('Update Profile'),
-            ),
-            SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginPage()),
-                );
-              },
-              child: Text('Logout'),
-            ),
-          ],
+  appBar: AppBar(
+    title: Center(child: Text('Profile')),
+    backgroundColor: const Color(0xFF74A2C7), 
+  ),
+  backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
+  body: Padding(
+    padding: EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Tampilkan gambar user
+        Center(
+          child: user!['avatar'] != null
+              ? Image.network(
+                  user!['avatar'],
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.person, size: 100);
+                  },
+                )
+              : const Icon(Icons.person, size: 100),
         ),
-      ),
-      
-    );
+        SizedBox(height: 16),
+        Text('Nama: ${user!['nama'] ?? '-'}'),
+        Text('Username: ${user!['username'] ?? '-'}'),
+        Text('Kontak: ${user!['kontak'] ?? '-'}'),
+        Text('Role: ${user!['role'] ?? '-'}'),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfileUpdatePage(
+                  token: widget.token,
+                  userData: user!, 
+                ),
+              ),
+            );
+          },
+          child: Text('Update Profile'),
+        ),
+        SizedBox(height: 30),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => LoginPage()),
+            );
+          },  
+          child: Text('Logout'),
+        ),
+      ],
+    ),
+  ),   
+);
+
   }
 }
