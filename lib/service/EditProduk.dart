@@ -6,11 +6,7 @@ class Editproduk extends StatefulWidget {
   final String token;
   final Map<String, dynamic> produk;
 
-  const Editproduk({
-    super.key,
-    required this.token,
-    required this.produk,
-  });
+  const Editproduk({super.key, required this.token, required this.produk});
 
   @override
   State<Editproduk> createState() => _EditprodukState();
@@ -66,15 +62,15 @@ class _EditprodukState extends State<Editproduk> {
         images: selectedImagePath != null ? [selectedImagePath!] : [],
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Produk berhasil diedit")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Produk berhasil diedit")));
 
       Navigator.pop(context, true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Gagal edit produk: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Gagal edit produk: $e")));
     }
   }
 
@@ -106,15 +102,15 @@ class _EditprodukState extends State<Editproduk> {
                   ),
                   child: selectedImagePath == null
                       ? (widget.produk['images'] != null &&
-                              widget.produk['images'].isNotEmpty
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(14),
-                              child: Image.network(
-                                widget.produk['images'][0]['url'],
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : const Icon(Icons.add_a_photo, size: 40))
+                                widget.produk['images'].isNotEmpty
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(14),
+                                child: Image.network(
+                                  widget.produk['images'][0]['url'],
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : const Icon(Icons.add_a_photo, size: 40))
                       : ClipRRect(
                           borderRadius: BorderRadius.circular(14),
                           child: Image.file(
@@ -129,21 +125,26 @@ class _EditprodukState extends State<Editproduk> {
             const SizedBox(height: 20),
 
             // NAMA PRODUK
-            const Text("Nama Produk",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              "Nama Produk",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             TextField(
               controller: namaC,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
 
             const SizedBox(height: 16),
 
             // KATEGORI
-            const Text("Kategori",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              "Kategori",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -151,8 +152,10 @@ class _EditprodukState extends State<Editproduk> {
                 border: Border.all(color: Colors.grey.shade400),
               ),
               child: DropdownButton<String>(
-                value: kategoriList.any(
-                        (e) => e["id"].toString() == selectedKategori)
+                value:
+                    kategoriList.any(
+                      (e) => e["id"].toString() == selectedKategori,
+                    )
                     ? selectedKategori
                     : null,
                 isExpanded: true,
@@ -173,42 +176,45 @@ class _EditprodukState extends State<Editproduk> {
             const SizedBox(height: 16),
 
             // HARGA
-            const Text("Harga",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text("Harga", style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: hargaC,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
 
             const SizedBox(height: 16),
 
             // STOK
-            const Text("Stok",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text("Stok", style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: stokC,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
 
             const SizedBox(height: 16),
 
             // DESKRIPSI
-            const Text("Deskripsi",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              "Deskripsi",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             TextField(
               controller: deskripsiC,
               maxLines: 4,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
 
@@ -220,15 +226,13 @@ class _EditprodukState extends State<Editproduk> {
                   backgroundColor: Colors.teal,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                onPressed: selectedKategori == null
-                    ? null
-                    : _simpanEdit,
+                onPressed: selectedKategori == null ? null : _simpanEdit,
                 child: const Text(
                   "Simpan Perubahan",
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

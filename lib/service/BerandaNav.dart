@@ -23,11 +23,11 @@ class _BerandanavState extends State<Berandanav> {
   void initState() {
     super.initState();
     _pages = [
-      BerandaPage(token: widget.token,),
+      BerandaPage(token: widget.token),
       Toko(token: widget.token),
       ProdukTokoPage(token: widget.token),
       // Detail(token: widget.token,productId: _selectedIndex,),
-      Kategori(token: widget.token,),
+      Kategori(token: widget.token),
       Profile(token: widget.token),
     ];
   }
@@ -38,13 +38,29 @@ class _BerandanavState extends State<Berandanav> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+        onDestinationSelected: (index) =>
+            setState(() => _selectedIndex = index),
         destinations: [
-          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Beranda'),
-          NavigationDestination(icon: Icon(Icons.store_outlined), label: 'Toko'),
-          NavigationDestination(icon: Icon(Icons.shopify_outlined), label: 'Produk'),
-          NavigationDestination(icon: Icon(Icons.tag_outlined), label: 'Kategori'),
-          NavigationDestination(icon: Icon(Icons.person_outlined), label: 'Profile'),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            label: 'Beranda',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.store_outlined),
+            label: 'Toko',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.shopify_outlined),
+            label: 'Produk',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.tag_outlined),
+            label: 'Kategori',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outlined),
+            label: 'Profile',
+          ),
         ],
       ),
     );

@@ -56,10 +56,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
       Navigator.pop(context, true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
       );
     }
 
@@ -94,7 +91,11 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                   color: Colors.grey.shade200,
                   child: image != null
                       ? Image.file(image!, fit: BoxFit.cover)
-                      : const Icon(Icons.add_a_photo, size: 60, color: Colors.grey),
+                      : const Icon(
+                          Icons.add_a_photo,
+                          size: 60,
+                          color: Colors.grey,
+                        ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -125,12 +126,15 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
               TextFormField(
                 controller: kategoriController,
                 decoration: const InputDecoration(labelText: "ID Kategori"),
-                validator: (v) => v == null || v.isEmpty ? "ID Kategori wajib diisi" : null,
+                validator: (v) =>
+                    v == null || v.isEmpty ? "ID Kategori wajib diisi" : null,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _isLoading ? null : submitProduk,
-                style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text("Tambah Produk"),

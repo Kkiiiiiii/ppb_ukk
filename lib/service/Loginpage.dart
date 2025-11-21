@@ -28,20 +28,20 @@ class _LoginPageState extends State<LoginPage> {
         child: Card(
           elevation: 8,
           child: Container(
-            padding:  EdgeInsets.all(32.0),
-            constraints:  BoxConstraints(maxWidth: 350),
+            padding: EdgeInsets.all(32.0),
+            constraints: BoxConstraints(maxWidth: 350),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                   FlutterLogo(size: 100),
-                   SizedBox(height: 16),
+                  FlutterLogo(size: 100),
+                  SizedBox(height: 16),
                   Text(
                     "MarketPlace Sekolah",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                 SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     "Silakan login untuk melanjutkan",
                     style: Theme.of(context).textTheme.titleMedium,
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                   SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   // Password
                   TextFormField(
@@ -96,81 +96,79 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   const SizedBox(height: 24),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: _isLoading
-                ? null
-                : () async {
-            if (_formKey.currentState?.validate() ?? false) {
-              setState(() => _isLoading = true);
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                setState(() => _isLoading = true);
 
-              try {
-                // Call API login
-                final result = await _loginService.login(
-                  _usernameController.text.trim(),
-                  _passwordController.text.trim(),
-                );
+                                try {
+                                  // Call API login
+                                  final result = await _loginService.login(
+                                    _usernameController.text.trim(),
+                                    _passwordController.text.trim(),
+                                  );
 
-                if (!mounted) return;
+                                  if (!mounted) return;
 
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Berandanav(
-                      token: result['token'],
-                      userId: result['userId'],
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => Berandanav(
+                                        token: result['token'],
+                                        userId: result['userId'],
+                                      ),
+                                    ),
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Terjadi kesalahan: $e'),
+                                    ),
+                                  );
+                                } finally {
+                                  setState(() => _isLoading = false);
+                                }
+                              }
+                            },
+                      child: _isLoading
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              'Masuk',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Terjadi kesalahan: $e'),
-                  ),
-                );
-              } finally {
-                setState(() => _isLoading = false);
-              }
-            }
-          },
-    child: _isLoading
-        ? CircularProgressIndicator(
-            color: Colors.white,
-          )
-        : Text(
-            'Masuk',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-         ),
-  ),
-),
 
-  const SizedBox(height: 16),
-  Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      const Text("Belum punya akun? "),
-      GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const Register()),
-          );
-        },
-      child: const Text(
-        "Daftar",
-        style: TextStyle(
-          color: Colors.blue,
-          fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    ),
-            ],
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Belum punya akun? "),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const Register()),
+                          );
+                        },
+                        child: const Text(
+                          "Daftar",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

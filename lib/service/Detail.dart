@@ -24,7 +24,8 @@ class _DetailState extends State<Detail> {
 
   Future<void> _fetchProductDetail() async {
     final url = Uri.parse(
-        'https://learncode.biz.id/api/products/${widget.productId}/show');
+      'https://learncode.biz.id/api/products/${widget.productId}/show',
+    );
 
     try {
       final response = await http.get(
@@ -43,7 +44,8 @@ class _DetailState extends State<Detail> {
         });
       } else {
         throw Exception(
-            'Gagal mengambil detail produk, status code: ${response.statusCode}');
+          'Gagal mengambil detail produk, status code: ${response.statusCode}',
+        );
       }
     } catch (e) {
       print("Error: $e");
@@ -58,38 +60,40 @@ class _DetailState extends State<Detail> {
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : product == null
-              ? const Center(child: Text("Produk tidak ditemukan"))
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      product!['gambar'] != null
-                          ? Image.network(
-                              product!['gambar'],
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
-                                  const Icon(Icons.broken_image, size: 100),
-                            )
-                          : const Icon(Icons.image_not_supported, size: 100),
-                      const SizedBox(height: 16),
-                      Text(
-                        product!['nama_produk'] ?? "Tanpa Nama",
-                        style: const TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Text("Harga: Rp ${product!['harga']}"),
-                      Text("Stok: ${product!['stok']}"),
-                      const SizedBox(height: 8),
-                      Text("Deskripsi:\n${product!['deskripsi']}"),
-                      const SizedBox(height: 8),
-                      Text("Tanggal Upload: ${product!['tanggal_upload']}"),
-                    ],
+          ? const Center(child: Text("Produk tidak ditemukan"))
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  product!['gambar'] != null
+                      ? Image.network(
+                          product!['gambar'],
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) =>
+                              const Icon(Icons.broken_image, size: 100),
+                        )
+                      : const Icon(Icons.image_not_supported, size: 100),
+                  const SizedBox(height: 16),
+                  Text(
+                    product!['nama_produk'] ?? "Tanpa Nama",
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text("Harga: Rp ${product!['harga']}"),
+                  Text("Stok: ${product!['stok']}"),
+                  const SizedBox(height: 8),
+                  Text("Deskripsi:\n${product!['deskripsi']}"),
+                  const SizedBox(height: 8),
+                  Text("Tanggal Upload: ${product!['tanggal_upload']}"),
+                ],
+              ),
+            ),
     );
   }
 }

@@ -129,14 +129,10 @@ class _RegisterState extends State<Register> {
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _register,
                       child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
                               'Register',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                     ),
                   ),
@@ -148,41 +144,45 @@ class _RegisterState extends State<Register> {
       ),
     );
   }
-Future<void> _register() async {
-  if (!(_formKey.currentState?.validate() ?? false)) return;
 
-  setState(() => _isLoading = true);
+  Future<void> _register() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
-  try {
-    // Konversi kontak ke int
-    final kontakInt = int.tryParse(_kontakController.text.trim());
-    if (kontakInt == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kontak harus berupa angka')),
+    setState(() => _isLoading = true);
+
+    try {
+      // Konversi kontak ke int
+      final kontakInt = int.tryParse(_kontakController.text.trim());
+      if (kontakInt == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kontak harus berupa angka')),
+        );
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final result = await _loginService.register(
+        _namaController.text.trim(),
+        _usernameController.text.trim(),
+        kontakInt, // kirim sebagai int
+        _passwordController.text.trim(),
       );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Registrasi berhasil! Selamat datang, ${result['nama']}',
+          ),
+        ),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal registrasi: $e')));
+    } finally {
       setState(() => _isLoading = false);
-      return;
     }
-
-    final result = await _loginService.register(
-      _namaController.text.trim(),
-      _usernameController.text.trim(),
-      kontakInt, // kirim sebagai int
-      _passwordController.text.trim(),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Registrasi berhasil! Selamat datang, ${result['nama']}')),
-    );
-
-    Navigator.pop(context);
-
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Gagal registrasi: $e')),
-    );
-  } finally {
-    setState(() => _isLoading = false);
   }
-}
 }

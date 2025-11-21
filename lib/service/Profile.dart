@@ -37,15 +37,11 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (user == null) {
-      return const Scaffold(
-        body: Center(child: Text("Gagal memuat data")),
-      );
+      return const Scaffold(body: Center(child: Text("Gagal memuat data")));
     }
 
     return Scaffold(
@@ -60,21 +56,83 @@ class _ProfileState extends State<Profile> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // FOTO PROFIL
-            Center(
-              child: CircleAvatar(
-                radius: 55,
-                backgroundColor: Colors.grey.shade300,
-                backgroundImage:
-                    user!['avatar'] != null ? NetworkImage(user!['avatar']) : null,
-                child: user!['avatar'] == null
-                    ? const Icon(Icons.person, size: 60, color: Colors.white)
-                    : null,
-              ),
+            // FOTO PROFIL + ICONS
+            Column(
+              children: [
+                CircleAvatar(
+                  radius: 55,
+                  backgroundColor: Colors.grey.shade300,
+                  backgroundImage: user!['avatar'] != null
+                      ? NetworkImage(user!['avatar'])
+                      : null,
+                  child: user!['avatar'] == null
+                      ? const Icon(Icons.person, size: 60, color: Colors.white)
+                      : null,
+                ),
+              ],
             ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileUpdatePage(
+                          token: widget.token,
+                          userData: user!,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.teal,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.edit, color: Colors.white),
+                  ),
+                ),
 
-            const SizedBox(height: 20),
-
+                // Logout Icon
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginPage()),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.logout, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20), // beri spacing agar icon tidak menumpuk
             // KARTU INFORMASI
             Container(
               padding: const EdgeInsets.all(20),
@@ -86,7 +144,7 @@ class _ProfileState extends State<Profile> {
                     color: Colors.black.withOpacity(0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
-                  )
+                  ),
                 ],
               ),
               child: Column(
@@ -97,57 +155,6 @@ class _ProfileState extends State<Profile> {
                   infoRow("Kontak", user!['kontak']),
                   infoRow("Role", user!['role']),
                 ],
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            // TOMBOL UPDATE PROFILE
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfileUpdatePage(
-                      token: widget.token,
-                      userData: user!,
-                    ),
-                  ),
-                );
-              },
-              child: const Text(
-                "Update Profil",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            // TOMBOL LOGOUT
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginPage()),
-                );
-              },
-              child: const Text(
-                "Logout",
-                style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
           ],
@@ -163,19 +170,13 @@ class _ProfileState extends State<Profile> {
         children: [
           Text(
             "$label:",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               value ?? "-",
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.grey.shade800,
-              ),
+              style: TextStyle(fontSize: 15, color: Colors.grey.shade800),
             ),
           ),
         ],

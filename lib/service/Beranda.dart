@@ -35,8 +35,9 @@ class _BerandaPageState extends State<BerandaPage> {
     } catch (e) {
       print("Error load produk: $e");
       setState(() => loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Gagal load daftar produk")));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Gagal load daftar produk")));
     }
   }
 
@@ -62,8 +63,9 @@ class _BerandaPageState extends State<BerandaPage> {
     } catch (e) {
       print("Error search: $e");
       setState(() => loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Gagal mencari produk")));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Gagal mencari produk")));
     }
   }
 
@@ -110,48 +112,50 @@ class _BerandaPageState extends State<BerandaPage> {
             child: loading
                 ? const Center(child: CircularProgressIndicator())
                 : produkList.isEmpty
-                    ? const Center(child: Text("Tidak ada produk"))
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: produkList.length,
-                        itemBuilder: (context, index) {
-                          final p = produkList[index];
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            child: ListTile(
-                              leading: p['gambar'] != null
-                                  ? Image.network(
-                                      p['gambar'],
-                                      width: 60,
-                                      height: 60,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) =>
-                                          const Icon(Icons.broken_image),
-                                    )
-                                  : const Icon(Icons.image_not_supported),
-                              title: Text(
-                                p['nama_produk'] ?? "Tanpa Nama",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.teal),
-                              ),
-                              subtitle: Text(
-                                  "Harga: Rp ${p['harga']}\nStok: ${p['stok']}\nDeskripsi: ${p['deskripsi']}"),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Detail(
-                                      token: widget.token,
-                                      productId: p['id_produk'],
-                                    ),
-                                  ),
-                                );
-                              },
+                ? const Center(child: Text("Tidak ada produk"))
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: produkList.length,
+                    itemBuilder: (context, index) {
+                      final p = produkList[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: ListTile(
+                          leading: p['gambar'] != null
+                              ? Image.network(
+                                  p['gambar'],
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) =>
+                                      const Icon(Icons.broken_image),
+                                )
+                              : const Icon(Icons.image_not_supported),
+                          title: Text(
+                            p['nama_produk'] ?? "Tanpa Nama",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                          subtitle: Text(
+                            "Harga: Rp ${p['harga']}\nStok: ${p['stok']}\nDeskripsi: ${p['deskripsi']}",
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Detail(
+                                  token: widget.token,
+                                  productId: p['id_produk'],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),

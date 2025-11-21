@@ -30,39 +30,40 @@ class _KategoriState extends State<Kategori> {
     } catch (e) {
       print("Error: $e");
       setState(() => loading = false);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Gagal load kategori")));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Gagal load kategori")));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Daftar Kategori"),
-      ),
+      appBar: AppBar(title: const Text("Daftar Kategori")),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : categories.isEmpty
-              ? const Center(child: Text("Tidak ada kategori"))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    final cat = categories[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: ListTile(
-                        title: Text(cat['nama_kategori'] ?? "Tanpa Nama"),
-                        subtitle: Text("ID: ${cat['id_kategori']}"),
-                        leading: const Icon(Icons.category),
-                        onTap: () {
-                          // Bisa tambahkan aksi ketika kategori dipilih
-                        },
-                      ),
-                    );
-                  },
-                ),
+          ? const Center(child: Text("Tidak ada kategori"))
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final cat = categories[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    title: Text(
+                      "Kategori:\t${cat['nama_kategori'] ?? "Tanpa Nama"}",
+                    ),
+                    subtitle: Text("ID: ${cat['id_kategori']}"),
+                    leading: const Icon(Icons.category),
+                    onTap: () {
+                      // Bisa tambahkan aksi ketika kategori dipilih
+                    },
+                  ),
+                );
+              },
+            ),
     );
   }
 }

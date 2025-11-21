@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'LoginService.dart'; 
+import 'LoginService.dart';
 
 class ProfileUpdatePage extends StatefulWidget {
   final String token;
   final Map<String, dynamic> userData;
 
-  const ProfileUpdatePage({required this.token, required this.userData, super.key});
+  const ProfileUpdatePage({
+    required this.token,
+    required this.userData,
+    super.key,
+  });
 
   @override
   State<ProfileUpdatePage> createState() => _ProfileUpdatePageState();
@@ -26,8 +30,12 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
     super.initState();
 
     namaController = TextEditingController(text: widget.userData['nama']);
-    usernameController = TextEditingController(text: widget.userData['username']);
-    kontakController = TextEditingController(text: widget.userData['kontak'].toString());
+    usernameController = TextEditingController(
+      text: widget.userData['username'],
+    );
+    kontakController = TextEditingController(
+      text: widget.userData['kontak'].toString(),
+    );
   }
 
   @override
@@ -58,13 +66,10 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
         ),
       );
 
-      Navigator.pop(context, result); 
+      Navigator.pop(context, result);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
       );
     }
 
@@ -74,9 +79,7 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Update Profile"),
-      ),
+      appBar: AppBar(title: const Text("Update Profile")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -102,8 +105,9 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
                   labelText: "Username",
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Username wajib diisi" : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? "Username wajib diisi"
+                    : null,
               ),
               const SizedBox(height: 16),
 
@@ -115,8 +119,9 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.phone,
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Kontak wajib diisi" : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? "Kontak wajib diisi"
+                    : null,
               ),
               const SizedBox(height: 24),
 

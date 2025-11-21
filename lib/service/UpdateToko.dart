@@ -12,8 +12,7 @@ class _UpdatetokoState extends State<Updatetoko> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Data Toko'
-        ),
+        title: Text('Edit Data Toko'),
         titleTextStyle: TextStyle(color: Colors.amber),
       ),
     );

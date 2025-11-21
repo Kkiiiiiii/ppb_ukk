@@ -14,5 +14,5 @@ class MainApp extends StatelessWidget {
       home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
-  } 
   }
+}
