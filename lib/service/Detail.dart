@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class Detail extends StatefulWidget {
   final String token;
-  final int productId;
+  final int productId; // ID produk yang dipilih
 
   const Detail({super.key, required this.token, required this.productId});
 
@@ -13,18 +13,19 @@ class Detail extends StatefulWidget {
 }
 
 class _DetailState extends State<Detail> {
-  Map<String, dynamic>? produk;
+  Map<String, dynamic>? product;
   bool loading = true;
 
   @override
   void initState() {
     super.initState();
-    loadProdukDetail();
+    _fetchProductDetail();
   }
 
-  Future<void> loadProdukDetail() async {
-    final url = Uri.parse('https://learncode.biz.id/api/products/${widget.productId}');
-    
+  Future<void> _fetchProductDetail() async {
+    final url = Uri.parse(
+        'https://learncode.biz.id/api/products/${widget.productId}/show');
+
     try {
       final response = await http.get(
         url,
@@ -34,17 +35,15 @@ class _DetailState extends State<Detail> {
         },
       );
 
-      print("Status: ${response.statusCode}");
-      print("Body: ${response.body}");
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          produk = data['data']; // asumsi API return { "data": {...} }
+          product = data['data']; // sesuaikan key dari respons API
           loading = false;
         });
       } else {
-        throw Exception('Gagal memuat produk, status: ${response.statusCode}');
+        throw Exception(
+            'Gagal mengambil detail produk, status code: ${response.statusCode}');
       }
     } catch (e) {
       print("Error: $e");
@@ -54,47 +53,43 @@ class _DetailState extends State<Detail> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-
-    if (produk == null) return const Scaffold(body: Center(child: Text("Produk tidak ditemukan")));
-
     return Scaffold(
-      appBar: AppBar(title: Text(produk!['nama'] ?? 'Detail Produk')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            produk!['gambar'] != null
-                ? Image.network(
-                    produk!['gambar'],
-                    height: 200,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Text("Gagal memuat gambar", style: TextStyle(color: Colors.red)),
-                  )
-                : const SizedBox.shrink(),
-            const SizedBox(height: 16),
-            Text(
-              produk!['nama'] ?? '-',
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Harga: Rp ${produk!['harga'] ?? '-'}',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Stok: ${produk!['stok'] ?? '-'}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              produk!['deskripsi'] ?? '-',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: const Text("Detail Produk")),
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : product == null
+              ? const Center(child: Text("Produk tidak ditemukan"))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      product!['gambar'] != null
+                          ? Image.network(
+                              product!['gambar'],
+                              width: double.infinity,
+                              height: 200,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  const Icon(Icons.broken_image, size: 100),
+                            )
+                          : const Icon(Icons.image_not_supported, size: 100),
+                      const SizedBox(height: 16),
+                      Text(
+                        product!['nama_produk'] ?? "Tanpa Nama",
+                        style: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text("Harga: Rp ${product!['harga']}"),
+                      Text("Stok: ${product!['stok']}"),
+                      const SizedBox(height: 8),
+                      Text("Deskripsi:\n${product!['deskripsi']}"),
+                      const SizedBox(height: 8),
+                      Text("Tanggal Upload: ${product!['tanggal_upload']}"),
+                    ],
+                  ),
+                ),
     );
   }
 }

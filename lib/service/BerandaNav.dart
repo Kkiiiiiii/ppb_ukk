@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ppb_marketplace/service/Beranda.dart';
+import 'package:ppb_marketplace/service/Kategori.dart';
 import 'package:ppb_marketplace/service/Produk.dart';
 import 'package:ppb_marketplace/service/Profile.dart';
 import 'package:ppb_marketplace/service/Toko.dart';
@@ -24,8 +25,9 @@ class _BerandanavState extends State<Berandanav> {
     _pages = [
       BerandaPage(token: widget.token,),
       Toko(token: widget.token),
-      Produk(token: widget.token),
-      Center(child: Text('Kategori')),
+      ProdukTokoPage(token: widget.token),
+      // Detail(token: widget.token,productId: _selectedIndex,),
+      Kategori(token: widget.token,),
       Profile(token: widget.token),
     ];
   }
