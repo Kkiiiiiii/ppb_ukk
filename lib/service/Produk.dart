@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ppb_marketplace/service/EditProduk.dart';
 import 'LoginService.dart';
 import 'Detail.dart';
 
@@ -111,55 +112,74 @@ class _ProdukTokoPageState extends State<ProdukTokoPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ListTile(
-                              leading: (p['images'] != null &&
-                                      p['images'].isNotEmpty)
-                                  ? Image.network(
-                                      p['images'][0]['url'],
-                                      width: 60,
-                                      height: 60,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) =>
-                                          const Icon(Icons.broken_image),
-                                    )
-                                  : const Icon(Icons.image_not_supported),
-                              title: Text(
-                                p['nama_produk'] ?? "Tanpa Nama",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.teal),
-                              ),
-                              subtitle: Text(
-                                  "Harga: Rp ${p['harga']}\nStok: ${p['stok']}\nDeskripsi: ${p['deskripsi']}"),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Detail(
-                                      token: widget.token,
-                                      productId: p['id_produk'],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            const Divider(),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton.icon(
-                                onPressed: () =>
-                                    _deleteProduk(p['id_produk']),
-                                icon: const Icon(Icons.delete,
-                                    color: Colors.red),
-                                label: const Text("Hapus",
-                                    style: TextStyle(color: Colors.red)),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+  leading: (p['images'] != null && p['images'].isNotEmpty)
+      ? Image.network(
+          p['images'][0]['url'],
+          width: 60,
+          height: 60,
+          fit: BoxFit.cover,
+        )
+      : const Icon(Icons.image_not_supported),
+  title: Text(
+    p['nama_produk'] ?? "Tanpa Nama",
+    style: const TextStyle(
+        fontWeight: FontWeight.bold, color: Colors.teal),
+  ),
+  subtitle: Text(
+      "Harga: Rp ${p['harga']}\nStok: ${p['stok']}\nDeskripsi: ${p['deskripsi']}"),
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Detail(
+          token: widget.token,
+          productId: p['id_produk'],
+        ),
+      ),
     );
+  },
+),
+
+const Divider(),
+
+Row(
+  mainAxisAlignment: MainAxisAlignment.end,
+  children: [
+    TextButton.icon(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Editproduk(
+              token: widget.token,
+              produk: p,
+            ),
+          ),
+        ).then((updated) {
+          if (updated == true) {
+            _loadProdukToko(); // reload setelah edit
+          }
+        });
+      },
+      icon: const Icon(Icons.edit, color: Colors.blue),
+      label: const Text("Edit", style: TextStyle(color: Colors.blue)),
+    ),
+
+    const SizedBox(width: 8),
+
+    TextButton.icon(
+      onPressed: () => _deleteProduk(p['id_produk']),
+      icon: const Icon(Icons.delete, color: Colors.red),
+      label: const Text("Hapus", style: TextStyle(color: Colors.red)),
+    ),
+  ],
+),
+                       ]
+                        ),
+                      )
+                    );                       
+                },
+              ),
+          );
+      }
   }
-}

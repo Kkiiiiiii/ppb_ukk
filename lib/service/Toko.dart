@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ppb_marketplace/service/LoginService.dart';
+import 'TambahProduk.dart'; // ⬅️ pastikan import halaman tambah produk
 
 class Toko extends StatefulWidget {
   final String token;
@@ -54,6 +55,23 @@ class _TokoState extends State<Toko> {
         backgroundColor: Colors.blue,
         elevation: 2,
       ),
+
+      // 🔥 FLOATING BUTTON TAMBAH PRODUK
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.blue,
+        icon: const Icon(Icons.add),
+        label: const Text("Tambah Produk"),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  TambahProdukPage(token: widget.token,), 
+            ),
+          );
+        },
+      ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Container(
@@ -85,6 +103,7 @@ class _TokoState extends State<Toko> {
               Text("Kontak: ${toko!['kontak_toko']}"),
               Text("Alamat: ${toko!['alamat']}"),
               const SizedBox(height: 20),
+
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: toko!['gambar'] != null

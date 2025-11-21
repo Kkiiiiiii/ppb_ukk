@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
-          ),
+         ),
   ),
 ),
 
@@ -165,13 +165,12 @@ class _LoginPageState extends State<LoginPage> {
         style: TextStyle(
           color: Colors.blue,
           fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-      ),
+      ],
     ),
-  ],
-),
-
-                ],
+            ],
               ),
             ),
           ),

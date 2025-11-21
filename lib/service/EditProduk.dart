@@ -1,23 +1,31 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:ppb_marketplace/service/Produk.dart';
+import 'package:ppb_marketplace/service/LoginService.dart';
 
-class TambahProduk extends StatefulWidget {
+class Editproduk extends StatefulWidget {
   final String token;
-  const TambahProduk({super.key, required this.token});
+  final Map<String, dynamic> produk;
+
+  const Editproduk({
+    super.key,
+    required this.token,
+    required this.produk,
+  });
 
   @override
-  State<TambahProduk> createState() => _TambahProdukState();
+  State<Editproduk> createState() => _EditprodukState();
 }
 
-class _TambahProdukState extends State<TambahProduk> {
+class _EditprodukState extends State<Editproduk> {
+  final LoginService loginService = LoginService();
+
   final TextEditingController namaC = TextEditingController();
   final TextEditingController hargaC = TextEditingController();
   final TextEditingController stokC = TextEditingController();
   final TextEditingController deskripsiC = TextEditingController();
 
   String? selectedKategori;
+  String? selectedImagePath;
 
   final List<Map<String, dynamic>> kategoriList = [
     {"id": 1, "nama": "ATK"},
@@ -25,13 +33,56 @@ class _TambahProdukState extends State<TambahProduk> {
     {"id": 7, "nama": "Hardware"},
   ];
 
-  String? selectedImagePath;
+  @override
+  void initState() {
+    super.initState();
+
+    // Isi data awal ke form
+    namaC.text = widget.produk['nama_produk'] ?? "";
+    hargaC.text = widget.produk['harga'].toString();
+    stokC.text = widget.produk['stok'].toString();
+    deskripsiC.text = widget.produk['deskripsi'] ?? "";
+
+    // Ambil kategori (backend kamu harus kirim id_kategori)
+    selectedKategori = widget.produk['id_kategori']?.toString();
+
+    // Kalau null atau tidak cocok dengan list dropdown → set null biar dropdown aman
+    if (selectedKategori == null ||
+        !kategoriList.any((e) => e["id"].toString() == selectedKategori)) {
+      selectedKategori = null;
+    }
+  }
+
+  Future<void> _simpanEdit() async {
+    try {
+      await loginService.editProduct(
+        widget.token,
+        widget.produk['id_produk'],
+        namaProduk: namaC.text,
+        idKategori: selectedKategori!,
+        harga: hargaC.text,
+        stok: stokC.text,
+        deskripsi: deskripsiC.text,
+        images: selectedImagePath != null ? [selectedImagePath!] : [],
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Produk berhasil diedit")),
+      );
+
+      Navigator.pop(context, true);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal edit produk: $e")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tambah Produk"),
+        title: const Text("Edit Produk"),
         backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
@@ -39,11 +90,11 @@ class _TambahProdukState extends State<TambahProduk> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
+            // IMAGE PICKER
             Center(
               child: GestureDetector(
                 onTap: () {
-                  // buka file picker nanti
+                  // TODO: picker gambar
                 },
                 child: Container(
                   height: 160,
@@ -54,10 +105,16 @@ class _TambahProdukState extends State<TambahProduk> {
                     border: Border.all(color: Colors.grey.shade400),
                   ),
                   child: selectedImagePath == null
-                      ? const Center(
-                          child: Icon(Icons.add_a_photo,
-                              size: 40, color: Colors.grey),
-                        )
+                      ? (widget.produk['images'] != null &&
+                              widget.produk['images'].isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.network(
+                                widget.produk['images'][0]['url'],
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : const Icon(Icons.add_a_photo, size: 40))
                       : ClipRRect(
                           borderRadius: BorderRadius.circular(14),
                           child: Image.file(
@@ -71,24 +128,22 @@ class _TambahProdukState extends State<TambahProduk> {
 
             const SizedBox(height: 20),
 
-            const Text(
-              "Nama Produk",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            // NAMA PRODUK
+            const Text("Nama Produk",
+                style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: namaC,
               decoration: InputDecoration(
-                hintText: "Masukkan nama produk",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            const Text(
-              "Kategori",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            // KATEGORI
+            const Text("Kategori",
+                style: TextStyle(fontWeight: FontWeight.bold)),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -96,7 +151,10 @@ class _TambahProdukState extends State<TambahProduk> {
                 border: Border.all(color: Colors.grey.shade400),
               ),
               child: DropdownButton<String>(
-                value: selectedKategori,
+                value: kategoriList.any(
+                        (e) => e["id"].toString() == selectedKategori)
+                    ? selectedKategori
+                    : null,
                 isExpanded: true,
                 underline: const SizedBox(),
                 hint: const Text("Pilih kategori"),
@@ -106,61 +164,55 @@ class _TambahProdukState extends State<TambahProduk> {
                     child: Text(item["nama"]),
                   );
                 }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedKategori = value;
-                  });
-                },
+                onChanged: (value) => setState(() {
+                  selectedKategori = value;
+                }),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            const Text(
-              "Harga",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            // HARGA
+            const Text("Harga",
+                style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: hargaC,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                hintText: "Masukkan harga",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            const Text(
-              "Stok",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            // STOK
+            const Text("Stok",
+                style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: stokC,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                hintText: "Masukkan stok",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            const Text(
-              "Deskripsi",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            // DESKRIPSI
+            const Text("Deskripsi",
+                style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: deskripsiC,
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: "Masukkan deskripsi produk",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
             ),
 
             const SizedBox(height: 25),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -170,15 +222,13 @@ class _TambahProdukState extends State<TambahProduk> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
-                onPressed: () {
-                   Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProdukTokoPage(token: widget.token)),
-                );
-                },
+                onPressed: selectedKategori == null
+                    ? null
+                    : _simpanEdit,
                 child: const Text(
-                  "Simpan Produk",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  "Simpan Perubahan",
+                  style: TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -188,4 +238,3 @@ class _TambahProdukState extends State<TambahProduk> {
     );
   }
 }
-
