@@ -36,7 +36,11 @@ class _RegisterState extends State<Register> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const FlutterLogo(size: 100),
+                Icon(
+                Icons.store,
+                size: 120,
+                    color: const Color.fromARGB(255, 3, 88, 88),
+              ),
                   const SizedBox(height: 16),
                   Text(
                     "Form Registrasi",

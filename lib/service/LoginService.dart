@@ -263,7 +263,6 @@ class LoginService {
       );
     }
   }
-
   // Hapus produk toko
   Future<void> deleteProdukToko(String token, int idProduk) async {
     final url = Uri.parse(
@@ -439,6 +438,31 @@ class LoginService {
       }
     } else {
       throw Exception("Gagal mencari data berdasarkan kategori(${response.statusCode})");
+    }
+  }
+  Future<void> deleteToko(String token, int idProduk) async {
+    final url = Uri.parse(
+      'https://learncode.biz.id/api/products/$idProduk/delete',
+    );
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print("Status Delete: ${response.statusCode}");
+    print("Body Delete: ${response.body}");
+
+    if (response.statusCode == 200) {
+      // Berhasil dihapus
+      return;
+    } else {
+      throw Exception(
+        'Gagal menghapus produk, status code: ${response.statusCode}',
+      );
     }
   }
 }

@@ -35,7 +35,11 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  FlutterLogo(size: 100),
+                  Icon(
+                    Icons.store,
+                    size: 120,
+                    color: const Color.fromARGB(255, 3, 88, 88), // Color of the icon
+                  ),
                   SizedBox(height: 16),
                   Text(
                     "MarketPlace Sekolah",
