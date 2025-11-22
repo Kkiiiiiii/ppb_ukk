@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ppb_marketplace/service/Buat_Toko.dart';
 import 'package:ppb_marketplace/service/LoginService.dart';
-import 'TambahProduk.dart'; // ⬅️ pastikan import halaman tambah produk
+import 'package:ppb_marketplace/service/Buat_Toko.dart';
+import 'Updatetoko.dart'; // Add the import for Updatetoko page
+import 'TambahProduk.dart'; // pastikan import halaman tambah produk
 
 class Toko extends StatefulWidget {
   final String token;
@@ -23,18 +24,20 @@ class _TokoState extends State<Toko> {
   }
 
   Future<void> loadToko() async {
-    try {
-      final data = await loginService.getToko(widget.token);
-      setState(() {
-        toko = data;
-        loading = false;
-      });
-    } catch (e) {
-      setState(() => loading = false);
-    }
+  try {
+    final data = await loginService.getToko(widget.token);
+    print("Store data: $data");  
+    setState(() {
+      toko = data;
+      loading = false;
+    });
+  } catch (e) {
+    print("Error loading store: $e");  // Log the error
+    setState(() => loading = false);
   }
+}
 
-  @override
+
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -48,7 +51,6 @@ class _TokoState extends State<Toko> {
         backgroundColor: Colors.blue,
         elevation: 2,
       ),
-
       body: toko == null
           ? Center(
               child: ElevatedButton(
@@ -184,7 +186,6 @@ class _TokoState extends State<Toko> {
                 ),
               ),
             ),
-
       floatingActionButton: toko != null
           ? FloatingActionButton.extended(
               backgroundColor: Colors.blue,
@@ -199,6 +200,36 @@ class _TokoState extends State<Toko> {
                 );
               },
             )
+          : null,
+
+      // Edit Toko Button
+      persistentFooterButtons: toko != null
+          ? [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  
+                ),
+                onPressed: () async {
+                  final updatedToko = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Updatetoko(
+                        toko: toko!,
+                        token: widget.token,
+                      ),
+                    ),
+                  );
+                  if (updatedToko != null) {
+                    setState(() {
+                      toko = updatedToko; 
+                    });
+                  }
+                },
+                
+                child: const Text("Edit Toko"),
+              ),
+            ]
           : null,
     );
   }

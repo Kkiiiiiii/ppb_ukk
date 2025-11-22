@@ -108,7 +108,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
               TextFormField(
                 controller: deskripsiController,
                 decoration: const InputDecoration(labelText: "Deskripsi"),
-                maxLines: 3,
+                maxLines: 5,
               ),
               const SizedBox(height: 12),
               TextFormField(

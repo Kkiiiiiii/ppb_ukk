@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ppb_marketplace/service/LoginService.dart';
 import 'Detail.dart';
+import 'package:http/http.dart' as http;
 
 class BerandaPage extends StatefulWidget {
   final String token;
@@ -14,34 +16,100 @@ class BerandaPage extends StatefulWidget {
 class _BerandaPageState extends State<BerandaPage> {
   final LoginService loginService = LoginService();
   List<dynamic> produkList = [];
+  List<dynamic> categories = []; // Kategori yang akan ditampilkan di dropdown
   bool loading = true;
+  bool categoryLoading = false; // Status loading kategori
 
+  int? selectedCategory; // ID kategori yang dipilih
   final TextEditingController searchC = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadProduk();
+    _loadCategories();
   }
 
   // ===== LOAD ALL PRODUK =====
-  Future<void> _loadProduk() async {
+  Future<void> _loadProduk({int? categoryId}) async {
+    setState(() => loading = true);
+
+    String url = categoryId != null
+        ? "https://learncode.biz.id/api/products/category/$categoryId"
+        : "https://learncode.biz.id/api/products"; // Endpoint untuk semua produk
+
     try {
-      final data = await loginService.getProduk(widget.token);
-      setState(() {
-        produkList = data;
-        loading = false;
-      });
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer ${widget.token}",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final res = jsonDecode(response.body);
+        setState(() {
+          produkList = List<dynamic>.from(
+            res['data'] ?? [],
+          ); // Pastikan tidak null
+          loading = false;
+        });
+      } else {
+        setState(() => loading = false);
+        throw Exception("Gagal mengambil produk");
+      }
     } catch (e) {
-      print("Error load produk: $e");
       setState(() => loading = false);
+      print("Error load produk: $e");
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Gagal load daftar produk")));
     }
   }
 
-  // ============ SEARCH PRODUK ============
+  // ===== LOAD CATEGORIES =====
+  Future<void> _loadCategories() async {
+    setState(() => categoryLoading = true);
+
+    try {
+      final response = await http.get(
+        Uri.parse("https://learncode.biz.id/api/categories"),
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer ${widget.token}",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          categories = List<dynamic>.from(
+            data['data'] ?? [],
+          ); // Pastikan kategori tidak null
+          categoryLoading = false;
+
+          // Jika kategori tersedia, pilih kategori pertama secara default
+          if (categories.isNotEmpty) {
+            selectedCategory = categories[0]['id_kategori'];
+          } else {
+            selectedCategory = null; // Jika tidak ada kategori, set null
+          }
+        });
+      } else {
+        setState(() => categoryLoading = false);
+        throw Exception("Gagal mengambil kategori");
+      }
+    } catch (e) {
+      setState(() => categoryLoading = false);
+      print("Error load kategori: $e");
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Gagal mengambil kategori")));
+    }
+  }
+
+  // ===== SEARCH PRODUK =====
   Future<void> _searchProduk() async {
     if (searchC.text.isEmpty) {
       _loadProduk(); // jika kosong → tampilkan semua produk
@@ -82,6 +150,31 @@ class _BerandaPageState extends State<BerandaPage> {
 
       body: Column(
         children: [
+          // ================= FILTER KATEGORI =================
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: categoryLoading
+                ? const CircularProgressIndicator()
+                : categories.isEmpty
+                ? const Text("Tidak ada kategori tersedia")
+                : DropdownButtonFormField<int>(
+                    value: selectedCategory,
+                    hint: const Text("Pilih Kategori"),
+                    items: categories.map((cat) {
+                      return DropdownMenuItem<int>(
+                        value: cat['id_kategori'], // Menggunakan id_kategori
+                        child: Text(cat['nama_kategori'] ?? 'Tidak ada nama'),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() => selectedCategory = value);
+                      _loadProduk(
+                        categoryId: value,
+                      ); // Filter produk berdasarkan kategori
+                    },
+                  ),
+          ),
+
           // ================= SEARCH BOX ==================
           Padding(
             padding: const EdgeInsets.all(16),
@@ -94,7 +187,7 @@ class _BerandaPageState extends State<BerandaPage> {
                   icon: const Icon(Icons.clear),
                   onPressed: () {
                     searchC.clear();
-                    _loadProduk();
+                    _loadProduk(); // jika kosong → tampilkan semua produk
                   },
                 ),
                 border: OutlineInputBorder(
@@ -139,7 +232,7 @@ class _BerandaPageState extends State<BerandaPage> {
                             ),
                           ),
                           subtitle: Text(
-                            "Harga: Rp ${p['harga']}\nStok: ${p['stok']}\nDeskripsi: ${p['deskripsi']}",
+                            "Harga: Rp ${p['harga']}\nStok: ${p['stok']}",
                           ),
                           onTap: () {
                             Navigator.push(

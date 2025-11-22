@@ -71,6 +71,7 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
       );
+      Navigator.pop(context, updateProfile());
     }
 
     setState(() => isLoading = false);

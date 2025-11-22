@@ -290,7 +290,7 @@ class LoginService {
       );
     }
   }
-
+  // Edit Produk //
   Future<void> editProduct(
     String token,
     int idProduk, {
@@ -332,7 +332,7 @@ class LoginService {
       throw Exception("HTTP Error: ${response.statusCode}");
     }
   }
-
+  //Search//
   Future<List<dynamic>> searchProduk(String token, String keyword) async {
     final url = Uri.parse(
       "https://learncode.biz.id/api/products/search?keyword=$keyword",
@@ -375,7 +375,7 @@ class LoginService {
 
     if (image != null) {
       final mimeType =
-          lookupMimeType(image.path) ?? 'image/jpeg'; // ✅ ini yang benar
+          lookupMimeType(image.path) ?? 'image/jpeg'; 
       final mimeSplit = mimeType.split('/');
       request.files.add(
         await http.MultipartFile.fromPath(
@@ -395,6 +395,50 @@ class LoginService {
     } else {
       final data = jsonDecode(respStr);
       throw Exception(data['message'] ?? 'Gagal membuat toko');
+    }
+  }
+
+  Future<Map<String, dynamic>> saveStore(
+    String token,
+    Map<String, dynamic> storeData,
+  ) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/stores/save'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(storeData),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to save store');
+    }
+  }
+
+  //filter kat
+  Future<List<dynamic>> byCategory  (String token, int idUser) async {
+    final url = Uri.parse(
+      "https://learncode.biz.id/api/products/category/$idUser",
+    );
+
+    final response = await http.get(
+      url,
+      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      final res = jsonDecode(response.body);
+
+      if (res["success"] == true && res["data"] != null) {
+        return List<dynamic>.from(res["data"]);
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception("Gagal mencari data berdasarkan kategori(${response.statusCode})");
     }
   }
 }
