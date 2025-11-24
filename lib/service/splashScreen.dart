@@ -12,7 +12,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
@@ -42,7 +41,6 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 30),  // Adds spacing between icon and text
 
-            // Text with better styling
             Text(
               "Selamat Datang di Marketplace Sekolah",
               style: TextStyle(

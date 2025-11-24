@@ -38,7 +38,7 @@ class _UpdatetokoState extends State<Updatetoko> {
         'alamat': _alamatController.text,
       };
 
-      // PANGGIL DARI INSTANCE, BUKAN CLASS
+      // Memanggil dari instance 
       final response = await loginService.saveStore(widget.token, updatedStore);
 
       if (response != null) {

@@ -24,9 +24,15 @@ class _EditprodukState extends State<Editproduk> {
   String? selectedImagePath;
 
   final List<Map<String, dynamic>> kategoriList = [
-    {"id": 1, "nama": "ATK"},
-    {"id": 2, "nama": "Elektronik"},
-    {"id": 7, "nama": "Hardware"},
+    {"id": 1, "nama": "Elektronik"},
+    {"id": 2, "nama": "Buku"},
+    {"id": 3, "nama": "Seragam"},
+    {"id": 4, "nama": "ATK"},
+    {"id": 5, "nama": "Aksesoris"},
+    {"id": 6, "nama": "Software"},
+    {"id": 8, "nama": "Alat Musik"},
+    {"id": 9, "nama": "Kamera"},
+    {"id": 10, "nama": "Perabot Sekolah"},
   ];
 
   @override
@@ -39,7 +45,6 @@ class _EditprodukState extends State<Editproduk> {
     stokC.text = widget.produk['stok'].toString();
     deskripsiC.text = widget.produk['deskripsi'] ?? "";
 
-    // Ambil kategori (backend kamu harus kirim id_kategori)
     selectedKategori = widget.produk['id_kategori']?.toString();
 
     // Kalau null atau tidak cocok dengan list dropdown → set null biar dropdown aman

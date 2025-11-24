@@ -20,7 +20,7 @@ class _BerandaPageState extends State<BerandaPage> {
   bool loading = true;
   bool categoryLoading = false; // Status loading kategori
 
-  int? selectedCategory; // ID kategori yang dipilih
+  int? selectedCategory; 
   final TextEditingController searchC = TextEditingController();
 
   @override
@@ -52,7 +52,7 @@ class _BerandaPageState extends State<BerandaPage> {
         setState(() {
           produkList = List<dynamic>.from(
             res['data'] ?? [],
-          ); // Pastikan tidak null
+          ); 
           loading = false;
         });
       } else {
@@ -86,14 +86,13 @@ class _BerandaPageState extends State<BerandaPage> {
         setState(() {
           categories = List<dynamic>.from(
             data['data'] ?? [],
-          ); // Pastikan kategori tidak null
+          ); 
           categoryLoading = false;
 
-          // Jika kategori tersedia, pilih kategori pertama secara default
           if (categories.isNotEmpty) {
             selectedCategory = categories[0]['id_kategori'];
           } else {
-            selectedCategory = null; // Jika tidak ada kategori, set null
+            selectedCategory = null;
           }
         });
       } else {
@@ -112,7 +111,7 @@ class _BerandaPageState extends State<BerandaPage> {
   // ===== SEARCH PRODUK =====
   Future<void> _searchProduk() async {
     if (searchC.text.isEmpty) {
-      _loadProduk(); // jika kosong → tampilkan semua produk
+      _loadProduk(); // jika kosong → menampilkan semua produk
       return;
     }
 
@@ -144,77 +143,102 @@ class _BerandaPageState extends State<BerandaPage> {
       appBar: AppBar(
         title: const Text("Beranda"),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.teal,
         elevation: 2,
       ),
 
       body: Column(
-        children: [
-          // ================= FILTER KATEGORI =================
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: categoryLoading
-                ? const CircularProgressIndicator()
-                : categories.isEmpty
-                ? const Text("Tidak ada kategori tersedia")
-                : DropdownButtonFormField<int>(
-                    value: selectedCategory,
-                    hint: const Text("Pilih Kategori"),
-                    items: categories.map((cat) {
-                      return DropdownMenuItem<int>(
-                        value: cat['id_kategori'], // Menggunakan id_kategori
-                        child: Text(cat['nama_kategori'] ?? 'Tidak ada nama'),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() => selectedCategory = value);
-                      _loadProduk(
-                        categoryId: value,
-                      ); // Filter produk berdasarkan kategori
-                    },
+  children: [
+    // ===================== FILTER KATEGORI =====================
+    Padding(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+      child: categoryLoading
+          ? const Center(child: CircularProgressIndicator(color: Colors.teal))
+          : categories.isEmpty
+              ? const Text("Tidak ada kategori tersedia")
+              : DropdownButtonFormField<int>(
+                  value: selectedCategory,
+                  decoration: InputDecoration(
+                    labelText: "Pilih Kategori",
+                    labelStyle: const TextStyle(color: Colors.teal),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.teal),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.teal.shade200),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-          ),
-
-          // ================= SEARCH BOX ==================
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: searchC,
-              decoration: InputDecoration(
-                hintText: "Cari produk...",
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    searchC.clear();
-                    _loadProduk(); // jika kosong → tampilkan semua produk
+                  items: categories.map((cat) {
+                    return DropdownMenuItem<int>(
+                      value: cat['id_kategori'],
+                      child: Text(cat['nama_kategori'] ?? 'Tidak ada nama'),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() => selectedCategory = value);
+                    _loadProduk(categoryId: value);
                   },
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onChanged: (value) {
-                _searchProduk(); // realtime search
-              },
-            ),
-          ),
+    ),
 
-          // ===== LIST PRODUK ======
-          Expanded(
-            child: loading
-                ? const Center(child: CircularProgressIndicator())
-                : produkList.isEmpty
-                ? const Center(child: Text("Tidak ada produk"))
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: produkList.length,
-                    itemBuilder: (context, index) {
-                      final p = produkList[index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          leading: p['gambar'] != null
+    // ===================== SEARCH BOX =====================
+    Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: TextField(
+        controller: searchC,
+        decoration: InputDecoration(
+          hintText: "Cari produk...",
+          prefixIcon: const Icon(Icons.search, color: Colors.teal),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.clear, color: Colors.teal),
+            onPressed: () {
+              searchC.clear();
+              _loadProduk();
+            },
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.teal),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.teal.shade200),
+          ),
+        ),
+        onChanged: (value) => _searchProduk(),
+      ),
+    ),
+
+    // ===================== LIST PRODUK =====================
+    Expanded(
+      child: loading
+          ? const Center(child: CircularProgressIndicator(color: Colors.teal))
+          : produkList.isEmpty
+              ? const Center(
+                  child: Text(
+                    "Tidak ada produk",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: produkList.length,
+                  itemBuilder: (context, index) {
+                    final p = produkList[index];
+                    return Card(
+                      elevation: 2,
+                      shadowColor: Colors.teal.shade100,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      margin: const EdgeInsets.only(bottom: 14),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(12),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: p['gambar'] != null
                               ? Image.network(
                                   p['gambar'],
                                   width: 60,
@@ -223,35 +247,51 @@ class _BerandaPageState extends State<BerandaPage> {
                                   errorBuilder: (_, __, ___) =>
                                       const Icon(Icons.broken_image),
                                 )
-                              : const Icon(Icons.image_not_supported),
-                          title: Text(
-                            p['nama_produk'] ?? "Tanpa Nama",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Harga: Rp ${p['harga']}\nStok: ${p['stok']}",
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Detail(
-                                  token: widget.token,
-                                  productId: p['id_produk'],
+                              : const Icon(
+                                  Icons.image_not_supported,
+                                  size: 40,
+                                  color: Colors.grey,
                                 ),
-                              ),
-                            );
-                          },
                         ),
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
+
+                        // NAMA PRODUK
+                        title: Text(
+                          p['nama_produk'] ?? "Tanpa Nama",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.teal,
+                          ),
+                        ),
+
+                        // HARGA + STOK
+                        subtitle: Text(
+                          "Harga: Rp ${p['harga']}\nStok: ${p['stok']}",
+                          style: TextStyle(
+                            height: 1.4,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Detail(
+                                token: widget.token,
+                                productId: p['id_produk'],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+    ),
+  ],
+),
+
     );
   }
 }

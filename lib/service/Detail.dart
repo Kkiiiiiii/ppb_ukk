@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class Detail extends StatefulWidget {
   final String token;
@@ -43,7 +45,9 @@ class _DetailState extends State<Detail> {
           loading = false;
         });
       } else {
-        throw Exception('Gagal mengambil detail produk, status code: ${response.statusCode}');
+        throw Exception(
+          'Gagal mengambil detail produk, status code: ${response.statusCode}',
+        );
       }
     } catch (e) {
       print("Error: $e");
@@ -58,95 +62,127 @@ class _DetailState extends State<Detail> {
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : product == null
-              ? const Center(child: Text("Produk tidak ditemukan"))
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 4,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Gambar Produk di tengah
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                          child: Container(
-                            color: Colors.grey.shade200,
-                            width: double.infinity,
-                            height: 200,
-                            child: product!['gambar'] != null
-                                ? Center(
-                                    child: Image.network(
-                                      product!['gambar'],
-                                      fit: BoxFit.contain,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      errorBuilder: (_, __, ___) => const Icon(
-                                        Icons.broken_image,
-                                        size: 80,
-                                      ),
-                                    ),
-                                  )
-                                : const Center(
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      size: 80,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        // Konten Teks
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                product!['nama_produk'] ?? "Tanpa Nama",
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "Harga: Rp ${product!['harga'] ?? '-'}",
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              Text(
-                                "Stok: ${product!['stok'] ?? '-'}",
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                "Deskripsi:",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                product!['deskripsi'] ?? "-",
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                "Tanggal Upload: ${product!['tanggal_upload'] ?? '-'}",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+          ? const Center(child: Text("Produk tidak ditemukan"))
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
+                elevation: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Gambar Produk di tengah
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
+                      child: Container(
+                        color: Colors.grey.shade200,
+                        width: double.infinity,
+                        height: 200,
+                        child: product!['gambar'] != null
+                            ? Center(
+                                child: Image.network(
+                                  product!['gambar'],
+                                  fit: BoxFit.contain,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  errorBuilder: (_, __, ___) =>
+                                      const Icon(Icons.broken_image, size: 80),
+                                ),
+                              )
+                            : const Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  size: 80,
+                                ),
+                              ),
+                      ),
+                    ),
+                    // Konten Teks
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product!['nama_produk'] ?? "Tanpa Nama",
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Harga: Rp ${product!['harga'] ?? '-'}",
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          Text(
+                            "Stok: ${product!['stok'] ?? '-'}",
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            "Deskripsi:",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            product!['deskripsi'] ?? "-",
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            "Tanggal Upload: ${product!['tanggal_upload'] ?? '-'}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          Text("Kategori: ${product!['kategori'] ?? '-'}",
+                          style: TextStyle(fontWeight: FontWeight.bold,
+                          color:  Colors.blue),
+                          ),
+                          // Text("Nama Toko: ${product!['nama_toko'] ?? '-'}",
+                          // style: TextStyle(fontWeight: FontWeight.normal,
+                          // color:  Colors.red),
+                          // ),                        
+                          SizedBox(height: 25,),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              final String nama = product!['nama_produk'] ?? "Produk";
+                              final String nomor = (product!['kontak'] ?? "")
+                                  .replaceAll(" ", "")
+                                  .replaceAll("-", "");
+
+                              final String text = Uri.encodeComponent(
+                                "Halo, saya tertarik dengan produk \"$nama\"",
+                              );
+
+                              final String url = "https://wa.me/$nomor?text=$text";
+
+                              // buka WhatsApp
+                              launchUrl(Uri.parse(url));
+                            },
+                            child: const Text("Pesan Via Whatsapp"),
+                            
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

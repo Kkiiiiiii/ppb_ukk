@@ -440,29 +440,25 @@ class LoginService {
       throw Exception("Gagal mencari data berdasarkan kategori(${response.statusCode})");
     }
   }
-  Future<void> deleteToko(String token, int idProduk) async {
-    final url = Uri.parse(
-      'https://learncode.biz.id/api/products/$idProduk/delete',
-    );
+  Future<bool> deleteToko(String token, int storeId) async {
+  final url = Uri.parse("https://learncode.biz.id/api/stores/$storeId/delete");
 
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+  final response = await http.delete(
+    url,
+    headers: {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    },
+  );
 
-    print("Status Delete: ${response.statusCode}");
-    print("Body Delete: ${response.body}");
+  print("Delete Store Status: ${response.statusCode}");
+  print("Delete Store Body: ${response.body}");
 
-    if (response.statusCode == 200) {
-      // Berhasil dihapus
-      return;
-    } else {
-      throw Exception(
-        'Gagal menghapus produk, status code: ${response.statusCode}',
-      );
-    }
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    return false;
   }
+}
+
 }

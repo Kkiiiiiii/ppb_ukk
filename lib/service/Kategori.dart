@@ -39,7 +39,7 @@ class _KategoriState extends State<Kategori> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Daftar Kategori")),
+      appBar: AppBar(title: const Text("Daftar Kategori"), centerTitle: true, backgroundColor: Colors.teal,),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : categories.isEmpty

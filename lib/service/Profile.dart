@@ -56,7 +56,6 @@ class _ProfileState extends State<Profile> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // FOTO PROFIL + ICONS
             Column(
               children: [
                 CircleAvatar(
@@ -132,7 +131,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ],
             ),
-            const SizedBox(height: 20), // beri spacing agar icon tidak menumpuk
+            const SizedBox(height: 20),
             // KARTU INFORMASI
             Container(
               padding: const EdgeInsets.all(20),
