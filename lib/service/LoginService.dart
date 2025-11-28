@@ -440,25 +440,34 @@ class LoginService {
       throw Exception("Gagal mencari data berdasarkan kategori(${response.statusCode})");
     }
   }
+
   Future<bool> deleteToko(String token, int storeId) async {
   final url = Uri.parse("https://learncode.biz.id/api/stores/$storeId/delete");
 
-  final response = await http.delete(
-    url,
-    headers: {
-      "Authorization": "Bearer $token",
-      "Content-Type": "application/json",
-    },
-  );
+  try {
+    final response = await http
+        .post(
+          url,
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json",
+          },
+          body: {}, // Laravel kadang butuh body untuk POST delete
+        )
+        .timeout(const Duration(seconds: 8));
 
-  print("Delete Store Status: ${response.statusCode}");
-  print("Delete Store Body: ${response.body}");
+    print("Delete Status: ${response.statusCode}");
+    print("Delete Body: ${response.body}");
 
-  if (response.statusCode == 200) {
-    return true;
-  } else {
+    if (response.statusCode == 200 ||
+        response.statusCode == 201 ||
+        response.statusCode == 204) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    print("Delete Error: $e");
     return false;
   }
 }
-
 }

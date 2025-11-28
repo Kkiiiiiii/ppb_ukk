@@ -24,19 +24,18 @@ class _TokoState extends State<Toko> {
   }
 
   Future<void> loadToko() async {
-  try {
-    final data = await loginService.getToko(widget.token);
-    print("Store data: $data");  
-    setState(() {
-      toko = data;
-      loading = false;
-    });
-  } catch (e) {
-    print("Error loading store: $e");  // Log the error
-    setState(() => loading = false);
+    try {
+      final data = await loginService.getToko(widget.token);
+      print("Store data: $data");
+      setState(() {
+        toko = data;
+        loading = false;
+      });
+    } catch (e) {
+      print("Error loading store: $e"); // Log the error
+      setState(() => loading = false);
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -186,137 +185,143 @@ class _TokoState extends State<Toko> {
                 ),
               ),
             ),
-     persistentFooterButtons: toko != null
-    ? [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-
-            // Tombol Edit
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              icon: const Icon(Icons.edit),
-              label: const Text("Edit Toko"),
-              onPressed: () async {
-                final updatedToko = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Updatetoko(
-                      toko: toko!,
-                      token: widget.token,
-                    ),
-                  ),
-                );
-                if (updatedToko != null) {
-                  setState(() {
-                    toko = updatedToko;
-                  });
-                }
-              },
-            ),
-
-            // 🔥 Tombol Tambah Produk (BARU)
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              icon: const Icon(Icons.add),
-              label: const Text("Tambah Produk"),
-              onPressed: () async {
-                final added = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TambahProdukPage(
-                      token: widget.token,
-                    ),
-                  ),
-                );
-
-                // Jika produk berhasil ditambah, reload data produk nanti kalau diperlukan
-                if (added == true) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Produk berhasil ditambahkan!"),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                }
-              },
-            ),
-
-            // Tombol Hapus
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              icon: const Icon(Icons.delete),
-              label: const Text("Hapus Toko"),
-              onPressed: () async {
-                final confirm = await showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: const Text("Hapus Toko"),
-                    content: const Text(
-                        "Apakah Anda yakin ingin menghapus toko ini? Semua produk juga akan hilang."),
-                    actions: [
-                      TextButton(
-                        child: const Text("Batal"),
-                        onPressed: () => Navigator.pop(context, false),
+      persistentFooterButtons: toko != null
+          ? [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Tombol Edit
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.edit),
+                    label: const Text("Edit"),
+                    onPressed: () async {
+                      final updatedToko = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Updatetoko(toko: toko!, token: widget.token),
                         ),
-                        child: const Text("Hapus"),
-                        onPressed: () => Navigator.pop(context, true),
-                      ),
-                    ],
+                      );
+                      if (updatedToko != null) {
+                        setState(() {
+                          toko = updatedToko;
+                        });
+                      }
+                    },
                   ),
-                );
 
-                if (confirm == true) {
-                  final success = await loginService.deleteToko(
-                    widget.token,
-                    toko!['id'],
-                  );
+                  // 🔥 Tombol Tambah Produk (BARU)
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add),
+                    label: const Text("Tambah"),
+                    onPressed: () async {
+                      final added = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TambahProdukPage(token: widget.token),
+                        ),
+                      );
 
-                  if (success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Toko berhasil dihapus"),
-                        backgroundColor: Colors.green,
+                      // Jika produk berhasil ditambah, reload data produk nanti kalau diperlukan
+                      if (added == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Produk berhasil ditambahkan!"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
                       ),
-                    );
-                    setState(() => toko = null);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Gagal menghapus toko"),
-                        backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    );
-                  }
-                }
-              },
-            ),
-          ],
-        )
-      ]
-    : null,
+                    ),
+                    icon: const Icon(Icons.delete),
+                    label: const Text("Hapus Toko"),
+                    onPressed: () async {
+                      final confirm = await showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text("Hapus"),
+                          content: const Text(
+                            "Apakah Anda yakin ingin menghapus toko ini? Semua produk juga akan hilang.",
+                          ),
+                          actions: [
+                            TextButton(
+                              child: const Text("Batal"),
+                              onPressed: () => Navigator.pop(context, false),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              child: const Text("Hapus"),
+                              onPressed: () => Navigator.pop(context, true),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirm == true) {
+                        final success = await loginService.deleteToko(
+                          widget.token,
+                          toko!['id_toko'],
+                        );
+
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Toko berhasil dihapus"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+
+                          await loadToko(); // WAJIB supaya halaman refresh
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Gagal menghapus toko"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ]
+          : null,
     );
   }
 }
